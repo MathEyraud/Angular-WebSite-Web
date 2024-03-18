@@ -1,0 +1,249 @@
+<h1 class="h2 mt-3">Formateurs</h1>
+<hr class="lead mt-0" />
+<div class="row tab-content">
+  <div id="list-view" class="tab-pane fade active show col-lg-12" role="tabpanel">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+        <h4 class="lead">
+          {{
+            trainerAllReserved.length > 0 || trainerAll.length > 0
+              ? "Liste des formateurs"
+              : "Vous n'avez aucun formateur pour l'instant"
+          }}
+        </h4>
+        <!-- Bouton pour ouvrir le modal d'ajout de formateur -->
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#trainerModal"
+        >
+          Ajouter un formateur
+        </button>
+      </div>
+      <!-- Modal pour ajouter un formateur -->
+      <div
+        class="modal fade"
+        id="trainerModal"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        aria-labelledby="trainerModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Ajouter un formateur</h5>
+            </div>
+            <form [formGroup]="trainerForm">
+              <div class="modal-body">
+                <!-- PRENOM -->
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    class="form-control input-default"
+                    placeholder="Prénom *"
+                    formControlName="firstName"
+                    required
+                  />
+                </div>
+                <!-- NOM -->
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    class="form-control input-default"
+                    placeholder="Nom *"
+                    formControlName="lastName"
+                    required
+                  />
+                </div>
+                <!-- ACTIVITY -->
+                <div class="mb-3">
+                    <input
+                      type="text"
+                      class="form-control input-default"
+                      placeholder="Activité *"
+                      formControlName="activity"
+                      required
+                    />
+                </div>
+                <!-- EMAIL -->
+                <div class="mb-3">
+                    <input
+                      type="text"
+                      class="form-control input-default"
+                      placeholder="Email *"
+                      formControlName="email"
+                      required
+                    />
+                </div>
+                <!-- TELEPHONE -->
+                <div class="mb-3">
+                    <input
+                      type="text"
+                      class="form-control input-default"
+                      placeholder="Téléphone"
+                      formControlName="phone"
+                    />
+                </div>
+                <!-- SEXE -->
+                <div class="mb-3">
+                    <label class="d-block">Sexe *</label>
+                    <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="F" formControlName="gender" required />
+                    <label class="form-check-label" for="female">Femme</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" id="male" value="M" formControlName="gender" required />
+                    <label class="form-check-label" for="male">Homme</label>
+                    </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="submit"
+                  [disabled]="trainerForm.invalid || isFormTrainerLoading"
+                  class="btn btn-primary"
+                  (click)="saveTrainer()"
+                >
+                  <span *ngIf="isFormTrainerLoading" class="spinner-border"></span
+                  ><span [ngClass]="isFormTrainerLoading ? 'hidden' : ''"
+                    >&nbsp;Enregistrer</span
+                  >
+                </button>
+                <button
+                  type="reset"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  &nbsp;Annuler
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tableau d'affichage des formateurs -->
+      <div
+        class="card-body"
+        *ngIf="trainerAllReserved.length > 0 || trainerAll.length > 0"
+      >
+        <!-- Barre de recherche et filtre -->
+        <div class="row mb-3 justify-content-between">
+          <div class="col-md-3">
+            <form style="width: 100%" [formGroup]="filterForm">
+              <div class="d-flex align-items-baseline">
+                <label for="entries" class="form-label me-2">Nombre</label>
+                <select
+                  formControlName="filter"
+                  class="form-select-sm"
+                  id="entries"
+                >
+                  <option value="5">5</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-4">
+            <div [ngClass]="searchVisibility?'search active mb-3':'search mb-3'">
+              <form [formGroup]="searchForm">
+                <input
+                  [ngClass]="searchVisibility?'input':'hidden'"
+                  (input)="searchBy()"
+                  type="search"
+                  placeholder="Nom/Prénom/etc..."
+                  formControlName="keyWord"
+                />
+              </form>
+              <button (click)="changeSearchVisibility()" class="search-btn">
+                <i class="fa fa-search text-light"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Tableau des formateurs -->
+        <div class="table table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <!-- Entêtes du tableau -->
+                <th scope="col" class="head-title">Nom</th>
+                <th scope="col" class="head-title">Prénom</th>
+                <th scope="col" class="head-title">Email</th>
+                <th scope="col" class="head-title">Activité</th>
+                <th scope="col" class="head-title">Téléphone</th>
+                <th scope="col" class="head-title">Sexe</th>
+                <th scope="col" class="head-title">Date</th>
+                <th scope="col" class="text-center head-title">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Lignes du tableau -->
+              <tr
+                *ngFor="let trainer of trainerAll | paginate: {
+                                    itemsPerPage: filterForm.value.filter,
+                                    currentPage: page
+                                  }; "
+              >
+                <!-- Affichage des attributs de chaque formateur -->
+                <td>{{ trainer.lastName }}</td>
+                <td>{{ trainer.firstName }}</td>
+                <td>{{ trainer.email }}</td>
+                <td>{{ trainer.activity }}</td>
+                <td>{{ trainer.phone }}</td>
+                <td>{{ trainer.gender }}</td>
+                <td>{{ trainer.creationDate | date: 'dd/MM/yyyy' }}</td>
+                <td class="text-center" style="cursor: pointer">
+                  <!-- Actions: Modifier, Supprimer, Détail -->
+                  <i
+                    class="fa fa-pencil colored"
+                    (click)="goToEdit(trainer.id)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#trainerUpdateModal"
+                    title="Modifier"
+                  ></i>
+                  <i
+                    class="fa fa-trash text-danger mx-2"
+                    title="Supprimer"
+                    (click)="trainerDelete(trainer.id)"
+                  ></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination -->
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <!-- Nombre d'entrées affichées -->
+            <p class="m-0">
+              Affichage de {{ filterForm.value.filter }} entrées sur
+              {{ trainerAll.length }}
+            </p>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-4 text-end">
+            <!-- Contrôles de pagination -->
+            <pagination-controls
+              (pageChange)="handlePageChange($event)"
+              (pageBoundsCorrection)="handlePageChange($event)"
+              previousLabel="Précédent"
+              nextLabel="Suivant"
+              screenReaderPaginationLabel="Pagination"
+              screenReaderPageLabel="page"
+              screenReaderCurrentLabel="Vous êtes à la page"
+            ></pagination-controls>
+          </div>
+        </div>
+      </div>
+      <!-- Chargement en cours -->
+      <div class="container-fluid waiting" *ngIf="isLoading">
+        <span class="spinner-border"></span>
+      </div>
+    </div>
+  </div>
+</div>

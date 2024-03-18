@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Login Page</title>
+</head>
+<body>
+
+<div class="container">
+  <h2 class="welcome-heading logo-style">Bienvenue</h2>
+  <div class="login-container">
+    <h2>Connexion</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="text" class="form-control" id="email" placeholder="Entrer votre nom d'utilisateur"
+               formControlName="email" required>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input type="password" class="form-control" id="password" placeholder="Entrer votre mot de passe"
+               formControlName="password" required>
+      </div>
+      <div class="form-group">
+        <button [disabled]="loginForm.invalid || isLoading" type="submit" class="btn  btn-login"><span *ngIf="isLoading" class="spinner-border"></span><span [ngClass]="isLoading ? 'hidden' : ''" >&nbsp;Connexion</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

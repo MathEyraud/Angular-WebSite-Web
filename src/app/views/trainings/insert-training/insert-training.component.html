@@ -1,0 +1,93 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Formations</h1>
+  </div>
+  
+  <div class="card">
+
+    <div class="card-header" style="background-color: #fff">
+      <h4 class="card-title" style="margin-top: 20px">Modification d'une formation</h4>
+    </div>
+    
+    <div class="card-body">
+
+        <!-- NB -->
+        <div class="card-title mb-3">
+            <label for="firstName" class="form-label"><b>NB: les champs notés avec (*) sont obligatoires</b></label>
+        </div>
+
+      <form [formGroup]="trainingForm" (ngSubmit)="saveOrUpdate()">
+  
+        <!-- Champ pour l'Intitulé -->
+        <div class="mb-3">
+            <label for="firstName" class="form-label">Intitulé *</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="title" 
+                formControlName="title"
+                required 
+            />
+        </div>
+        
+        <!-- Champ pour le prix et le logo -->
+        <div class="d-flex">
+            <!-- Champ pour le prix -->
+            <div class="mb-3 me-3 flex-fill">
+                <label for="firstName" class="form-label">Prix de la formation *</label>
+                <input 
+                    type="number" 
+                    class="form-control" 
+                    id="trainingPrice" 
+                    formControlName="trainingPrice" 
+                    required 
+                />
+            </div>
+            
+            <!-- Champ pour le logo -->
+            <div class="mb-3 flex-fill">
+                <div class="mb-3 flex-fill">
+                    <label for="logo" class="form-label me-2">Lien du logo *</label>
+                    <input 
+                        type="text" 
+                        class="form-control flex-grow-1" 
+                        id="logo" 
+                        formControlName="logo" 
+                        placeholder="https://"
+                        (keyup)="updateLogoPreview($event)"
+                    />
+                </div>
+
+                <div class="logo-preview mb-3">
+                    <img [src]="logoPreview" alt="Logo Preview">
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Champ pour la description -->
+        <div class="mb-3">
+            <label for="firstName" class="form-label">Description *</label>
+            <textarea 
+                class="form-control" 
+                id="description" 
+                formControlName="description" 
+                required 
+                placeholder="Description"
+                rows="5"
+            ></textarea>
+        </div>
+
+  
+        <!-- Boutons pour enregistrer ou annuler -->
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="submit" class="btn btn-primary" [disabled]="trainingForm.invalid">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span *ngIf="!isLoading">Enregistrer</span>
+          </button>
+          <button type="button" class="btn btn-secondary ms-md-2" (click)="cancel()">Annuler</button>
+        </div>
+  
+      </form>
+    </div>
+  </div>
+  

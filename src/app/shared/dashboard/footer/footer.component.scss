@@ -1,0 +1,31 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#bg-dark-footer {
+  bottom: 0;
+    position: relative;
+    min-height: 15vh;
+    margin-top: 25%;
+    background-color: #359F8C;
+    overflow-y: hidden;
+    flex-shrink: 0;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    color: white;
+}
+
+.text-center {
+    font-family: Poppins, serif;
+    font-size: 20px;
+    color: #fff;
+    padding: 50px 0;
+}

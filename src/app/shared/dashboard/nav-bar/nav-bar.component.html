@@ -1,0 +1,100 @@
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <!-- Logo de la marque -->
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3"
+      ><h1 class="logo-style">AKDEMIA</h1></a
+    >
+
+    <!-- Bouton de bascule pour les petits écrans -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Contenu de la barre de navigation -->
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <!-- Liste des éléments de menu -->
+      <ul class="navbar-nav">
+        
+        <!-- Élément de menu: Accueil -->
+        <li class="nav-item">
+          <a [routerLink]="dashboardLink" class="nav-link text-white"
+            >Accueil</a
+          >
+        </li>
+
+        <!-- Élément de menu: Themes -->
+        <li class="nav-item">
+          <a
+            [routerLink]="themesLink"
+            class="nav-link text-white"
+            [routerLinkActive]="'active-menu'"
+            >Themes</a
+          >
+        </li>
+
+        <!-- Élément de menu: Formateurs -->
+        <li class="nav-item">
+          <a
+            [routerLink]="formateursLink"
+            class="nav-link text-white"
+            [routerLinkActive]="'active-menu'"
+          >
+            Formateurs
+          </a>
+        </li>
+
+        <!-- Élément de menu: Formations -->
+        <li class="nav-item">
+          <a
+            [routerLink]="formationsLink"
+            class="nav-link text-white"
+            [routerLinkActive]="'active-menu'"
+          >
+            Formations
+          </a>
+        </li>
+
+
+        <!-- Élément de menu: Participants -->
+        <li class="nav-item">
+          <a
+            [routerLink]="clientsLink"
+            class="nav-link text-white"
+            [routerLinkActive]="'active-menu'"
+          >
+            Participants
+          </a>
+        </li>
+
+        <!-- Élément de menu: Sessions -->
+        <li class="nav-item">
+          <a
+            [routerLink]="sessionsLink"
+            class="nav-link text-white"
+            [routerLinkActive]="'active-menu'"
+          >
+            Sessions
+          </a>
+        </li>
+
+        <!-- Élément de menu: Déconnexion -->
+        <li class="nav-item">
+          <a
+            (click)="logout()"
+            class="nav-link text-white"
+            [routerLinkActive]="'active-menu'"
+          >
+            <!-- Icône de déconnexion -->
+            <i class="fa-solid fa-right-from-bracket logout"></i>
+          </a>
+          <!-- <a class="nav-link px-3" (click)="logout()"><img id="u3_img" class="img" src="../../../../assets/images/u3.svg"></a> -->
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

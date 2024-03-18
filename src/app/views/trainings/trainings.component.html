@@ -1,0 +1,264 @@
+<h1 class="h2 mt-3">Formations</h1>
+<hr class="lead mt-0" />
+<div class="row tab-content">
+  <div id="list-view" class="tab-pane fade active show col-lg-12" role="tabpanel">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between">
+
+        <h4 class="lead">
+          {{
+            trainingAllReserved.length > 0 || trainingAll.length > 0
+              ? "Liste des formations"
+              : "Vous n'avez aucune formation pour l'instant"
+          }}
+        </h4>
+
+        <!-- Bouton pour ouvrir le modal d'ajout de formations -->
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#trainingModal"
+        >
+          Ajouter une formation
+        </button>
+
+      </div>
+
+      <!-- Modal pour ajouter un formation -->
+      <div
+        class="modal fade"
+        id="trainingModal"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        aria-labelledby="trainingModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title">Ajouter une formation</h5>
+            </div>
+
+            <form [formGroup]="trainingForm">
+              <div class="modal-body">
+
+                <!-- Intitulé -->
+                <div class="mb-3">
+                  <label for="title">Intitulé <span class="text-danger"><span class="text-danger">*</span></span></label>
+                  <input
+                    type="text"
+                    id="title"
+                    class="form-control"
+                    placeholder="Généralité JEE"
+                    formControlName="title"
+                    required
+                    />
+                </div>
+    
+                <!-- Sous Thème -->
+                <!-- TODO -->
+                
+                
+                <!-- Prix de la formation -->
+                <div class="mb-3">
+                  <label for="trainingPrice">Prix de la formation <span class="text-danger">*</span></label>
+                  <input
+                  type="number"
+                  id="trainingPrice"
+                  class="form-control"
+                  placeholder="0"
+                  formControlName="trainingPrice"
+                  required
+                  />
+                </div>
+                  
+                <!-- Champ pour le logo -->
+                <div class="d-flex">
+                  <div class="mb-3 flex-fill">
+                      <div class="mb-3 flex-fill">
+                          <label for="logo" class="form-label me-2">Lien du logo <span class="text-danger">*</span></label>
+                          <input 
+                              type="text" 
+                              class="form-control flex-grow-1" 
+                              id="logo" 
+                              formControlName="logo" 
+                              placeholder="https://"
+                              (keyup)="updateLogoPreview($event)"
+                          />
+                      </div>
+
+                      <div class="logo-preview mb-3">
+                          <img [src]="logoPreview" alt="Logo Preview">
+                      </div>
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label for="description">Description <span class="text-danger">*</span></label>
+                    <textarea
+                    id="description"
+                    class="form-control"
+                    placeholder="Description"
+                    rows="5"
+                    formControlName="description"
+                    required
+                    ></textarea>
+                </div>
+
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="submit"
+                  [disabled]="trainingForm.invalid || isFormTrainingLoading"
+                  class="btn btn-primary"
+                  (click)="saveTraining()"
+                >
+                  <span *ngIf="isFormTrainingLoading" class="spinner-border"></span
+                  ><span [ngClass]="isFormTrainingLoading ? 'hidden' : ''"
+                    >&nbsp;Enregistrer</span
+                  >
+                </button>
+                <button
+                  type="reset"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  &nbsp;Annuler
+                </button>
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tableau d'affichage des formations -->
+      <div
+        class="card-body"
+        *ngIf="trainingAllReserved.length > 0 || trainingAll.length > 0"
+      >
+        <!-- Barre de recherche et filtre -->
+        <div class="row mb-3 justify-content-between">
+          <div class="col-md-3">
+            <form style="width: 100%" [formGroup]="filterForm">
+              <div class="d-flex align-items-baseline">
+                <label for="entries" class="form-label me-2">Nombre</label>
+                <select
+                  formControlName="filter"
+                  class="form-select-sm"
+                  id="entries"
+                >
+                  <option value="5">5</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-4">
+            <div [ngClass]="searchVisibility?'search active mb-3':'search mb-3'">
+              <form [formGroup]="searchForm">
+                <input
+                  [ngClass]="searchVisibility?'input':'hidden'"
+                  (input)="searchBy()"
+                  type="search"
+                  placeholder="Intitulé/Description/etc..."
+                  formControlName="keyWord"
+                  style="width: 100%" 
+                />
+              </form>
+              <button (click)="changeSearchVisibility()" class="search-btn">
+                <i class="fa fa-search text-light"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tableau des formations -->
+        <div class="table table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <!-- Entêtes du tableau -->
+                <th scope="col" class="head-title">Photo</th>
+                <th scope="col" class="head-title">Intitulé</th>
+                <th scope="col" class="head-title">Description</th>
+                <th scope="col" class="head-title">Date de création</th>
+                <th scope="col" class="head-title">Prix</th>
+                <th scope="col" class="text-center head-title">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Lignes du tableau -->
+              <tr
+                *ngFor="let training of trainingAll | paginate: {
+                  itemsPerPage: filterForm.value.filter,
+                  currentPage: page
+                }; "
+              >
+                <!-- Affichage des attributs de chaque formation -->
+                <td>
+                    <img [src]="training.logo" alt="Photo de la formation" width="50" height="50">
+                </td>
+                <td>{{ training.title }}</td>
+                <td>{{ training.description }}</td>
+                <td>{{ training.creationDate | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ training.trainingPrice }} €</td>
+                <td class="text-center" style="cursor: pointer">
+                  <!-- Actions: Modifier, Supprimer, Détail -->
+                  <i
+                    class="fa fa-pencil colored"
+                    (click)="goToEdit(training.id)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#trainingUpdateModal"
+                    title="Modifier"
+                  ></i>
+                  <i
+                    class="fa fa-trash text-danger mx-2"
+                    title="Supprimer"
+                    (click)="trainingDelete(training.id)"
+                  ></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <!-- Nombre d'entrées affichées -->
+            <p class="m-0">
+              Affichage de {{ filterForm.value.filter }} entrées sur
+              {{ trainingAll.length }}
+            </p>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-4 text-end">
+            <!-- Contrôles de pagination -->
+            <pagination-controls
+              (pageChange)="handlePageChange($event)"
+              (pageBoundsCorrection)="handlePageChange($event)"
+              previousLabel="Précédent"
+              nextLabel="Suivant"
+              screenReaderPaginationLabel="Pagination"
+              screenReaderPageLabel="page"
+              screenReaderCurrentLabel="Vous êtes à la page"
+            ></pagination-controls>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chargement en cours -->
+      <div class="container-fluid waiting" *ngIf="isLoading">
+        <span class="spinner-border"></span>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+.logo-preview {
+    width: 50px;       /* Taille de la zone de prévisualisation du logo */
+    height: 50px;
+    margin-right: 10px; /* Marge entre la zone de prévisualisation et le champ texte */
+    border-radius: 50%; /* Pour un cercle */
+    overflow: hidden;   /* Pour cacher le contenu en dehors du cercle */
+}
+
+.logo-preview img {
+    width: 100%;        /* Pour remplir entièrement le cercle */
+    height: 100%;
+    object-fit: cover;  /* Pour adapter la taille de l'image pour remplir le cercle */
+}

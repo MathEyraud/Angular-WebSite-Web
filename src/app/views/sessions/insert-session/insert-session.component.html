@@ -1,0 +1,215 @@
+<div
+  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+>
+  <h1 class="h2">Créer une session</h1>
+</div>
+<div class="card">
+
+  <div class="card-header" style="background-color: #fff">
+    <h4 class="card-title" style="margin-top: 20px">{{ title }}</h4>
+  </div>
+
+  <div class="card-body">
+
+    <form [formGroup]="sessionForm" (ngSubmit)="createSession()">
+
+        <div *ngIf="idSession" class="form-group" style="margin-bottom: 20px">
+            <label for="code">Type:</label>
+            <input type="text" id="code" disabled [value]="formVisibility" />
+        </div>
+
+        <div
+            *ngIf="!idSession"
+            class="form-group"
+            style="margin-bottom: 20px"
+        >
+            <select
+            (change)="updateForm($event)"
+            class="form-control"
+            style="border-top: none; border-left: none; border-right: none"
+            >
+            <option value="" disabled [defaultSelected]="true">
+                Sélectionner le type de session
+            </option>
+            <option value="interSession">Inter session</option>
+            <option value="intraSession">Intra session</option>
+            </select>
+        </div>
+
+        <div class="group" >
+            
+            <!-- code -->
+            <div class="form-group" style="margin-bottom: 20px">
+                <label for="code">Code<span class="text-danger">*</span></label>
+                <input
+                    type="text"
+                    class="form-control"
+                    formControlName="code"
+                    style="border-top: none; border-left: none; border-right: none"
+                />
+                <div *ngIf="checkFieldEmpty('code')" class="text-danger">Veuillez renseigner un code.</div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group" style="margin-bottom: 20px">
+                <label for="description">Description<span class="text-danger">*</span></label>
+                <textarea 
+                    class="form-control" 
+                    formControlName="description" 
+                    rows="5"
+                    style="border-top: none; border-left: none; border-right: none"
+                ></textarea>
+                <div *ngIf="checkFieldEmpty('description')" class="text-danger">Veuillez renseigner une description.</div>
+            </div>
+            
+            <div class="row">
+
+                <div class="col form-group" style="margin-bottom: 20px">
+                    <label for="location">Lieu<span class="text-danger">*</span></label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        formControlName="location"
+                        style="border-top: none; border-left: none; border-right: none"
+                    />
+                    <div *ngIf="checkFieldEmpty('location')" class="text-danger">Veuillez renseigner un lieu.</div>
+                </div>
+    
+                <div class="col form-group" style="margin-bottom: 20px">
+                    <label for="date">Date<span class="text-danger">*</span></label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      formControlName="date"
+                      style="border-top: none; border-left: none; border-right: none"
+                    />
+                    <div *ngIf="checkFieldEmpty('date')" class="text-danger">Veuillez renseigner une date.</div>
+                </div>
+    
+                <div class="col form-group" style="margin-bottom: 20px">
+                    <label for="duration">Durée (J)<span class="text-danger">*</span></label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="duration"
+                      style="border-top: none; border-left: none; border-right: none"
+                    />
+                    <div *ngIf="checkFieldEmpty('duration')" class="text-danger">Veuillez renseigner une durée.</div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col form-group" style="margin-bottom: 20px">
+                    <label for="price">Prix (€)<span class="text-danger">*</span></label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        formControlName="price"
+                        style="border-top: none; border-left: none; border-right: none"
+                    />
+                    <div *ngIf="checkFieldEmpty('price')" class="text-danger">Veuillez renseigner un prix.</div>
+                </div>
+
+                <div class="col form-group" style="margin-bottom: 20px">
+                    <label for="trainer">Formateur<span class="text-danger">*</span></label>
+                    <select
+                    formControlName="trainer"
+                    class="form-control"
+                    style="border-top: none; border-left: none; border-right: none"
+                    >
+                    <option value="" disabled>Sélectionner votre formateur</option>
+                    <option
+                        *ngFor="let trainer of trainers"
+                        [ngValue]="trainer"
+                        [selected]="
+                        trainer.id === entreprise.id ? entreprise.name : null
+                        "
+                    >
+                        {{ trainer.lastName }} {{trainer.firstName}}
+                    </option>
+                    </select>
+                    <div *ngIf="checkFieldEmpty('trainer')" class="text-danger">Veuillez renseigner un formateur.</div>
+                </div>
+
+                <div class="col form-group" style="margin-bottom: 20px">
+                    <label for="training">Formation<span class="text-danger">*</span></label>
+                    <select
+                    formControlName="training"
+                    class="form-control"
+                    style="border-top: none; border-left: none; border-right: none"
+                    >
+                    <option value="" disabled>Sélectionner la formation...</option>
+                    <option
+                        *ngFor="let training of trainings"
+                        [ngValue]="training"
+                        [selected]="
+                        training.id === entreprise.id ? entreprise.name : null
+                        "
+                    >
+                        {{ training.title }}
+                    </option>
+                    </select>
+                    <div *ngIf="checkFieldEmpty('training')" class="text-danger">Veuillez renseigner une formation.</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="group" *ngIf="formVisibility === 'interSession'">
+
+            <div class="form-group" style="margin-bottom: 20px">
+                <label for="minParticipants">Min participants<span class="text-danger">*</span></label>
+                <input
+                    type="number"
+                    class="form-control"
+                    formControlName="minParticipants"
+                    style="border-top: none; border-left: none; border-right: none"
+                />
+            </div>
+
+        </div>
+
+        <div class="group" *ngIf="formVisibility === 'intraSession'">
+
+            <div class="form-group" style="margin-bottom: 20px">
+                <label for="company">Entreprise<span class="text-danger">*</span></label>
+                <select
+                  formControlName="company"
+                  class="form-control"
+                  style="border-top: none; border-left: none; border-right: none"
+                >
+                  <option value="" disabled>Sélectionner votre entreprise...</option>
+                  <option
+                    *ngFor="let company of companies"
+                    [ngValue]="company"
+                    [selected]="
+                      company.id === entreprise.id ? entreprise.name : null
+                    "
+                  >
+                    {{ company.name }}
+                  </option>
+                </select>
+            </div>
+
+        </div>
+
+        <button
+        type="submit"
+        class="btn btn-primary"
+        style="float: right; margin-right: 20px;"
+      >
+        <span *ngIf="isLoading" class="spinner-border"></span>
+        <span [ngClass]="isLoading ? 'hidden' : ''"
+          ><span [ngClass]="isFormEdit ? 'hidden' : ''">Enregistrer</span
+          ><span [ngClass]="!isFormEdit ? 'hidden' : ''">Annuler</span></span
+        >
+      </button>
+
+      <button class="btn btn-secondary" style="float: right; margin-right: 20px;" (click)="cancel()">Annuler</button>
+    
+    </form>
+
+  </div>

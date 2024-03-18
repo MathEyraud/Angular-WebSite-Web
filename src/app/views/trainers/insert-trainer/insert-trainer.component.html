@@ -1,0 +1,71 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Formateurs</h1>
+</div>
+
+<div class="card">
+  <div class="card-header" style="background-color: #fff">
+    <h4 class="card-title" style="margin-top: 20px">Modification d'un formateur</h4>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="trainerForm" (ngSubmit)="saveOrUpdate()">
+
+      <!-- Champ pour le prénom -->
+      <div class="mb-3">
+        <label for="firstName" class="form-label">Prénom:</label>
+        <input type="text" class="form-control" id="firstName" formControlName="firstName" required />
+      </div>
+
+      <!-- Champ pour le nom -->
+      <div class="mb-3">
+        <label for="lastName" class="form-label">Nom:</label>
+        <input type="text" class="form-control" id="lastName" formControlName="lastName" required />
+      </div>
+
+      <!-- Champ pour l'email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" class="form-control" id="email" formControlName="email" required />
+        <div class="text-danger" *ngIf="emailControl.invalid && emailControl.touched">
+          Veuillez entrer une adresse email valide.
+        </div>
+      </div>
+
+      <!-- Champ pour l'activité -->
+      <div class="mb-3">
+        <label for="activity" class="form-label">Activité:</label>
+        <input type="text" class="form-control" id="activity" formControlName="activity" required />
+      </div>
+
+      <!-- Champ pour le téléphone -->
+      <div class="mb-3">
+        <label for="phone" class="form-label">Téléphone:</label>
+        <input type="text" class="form-control" id="phone" formControlName="phone" />
+      </div>
+
+      <!-- Champ pour le sexe -->
+      <div class="mb-3">
+        <label class="form-label">Sexe:</label>
+        <div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="genderMale" value="M" formControlName="gender" required />
+            <label class="form-check-label" for="genderMale">Homme</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" id="genderFemale" value="F" formControlName="gender" required />
+            <label class="form-check-label" for="genderFemale">Femme</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Boutons pour enregistrer ou annuler -->
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-primary" [disabled]="trainerForm.invalid">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span *ngIf="!isLoading">Enregistrer</span>
+        </button>
+        <button type="button" class="btn btn-secondary ms-md-2" (click)="cancel()">Annuler</button>
+      </div>
+
+    </form>
+  </div>
+</div>

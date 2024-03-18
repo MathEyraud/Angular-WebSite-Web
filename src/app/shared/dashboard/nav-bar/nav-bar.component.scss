@@ -1,0 +1,25 @@
+.container{
+    max-width: 100%;
+}
+.fa-sign-out::before {
+    width: 50px; 
+    height: 50px; 
+}
+
+.logo-style{
+    font-family: Showcard Gothic Normal, Showcard Gothic; 
+    font-weight: 400; 
+    font-size: 40px;
+}
+
+.navbar{
+    background-color: #359F8C;
+}
+
+.nav-link{
+    font-size: 22px;
+}
+
+.logout{
+    cursor: pointer;
+}

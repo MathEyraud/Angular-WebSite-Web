@@ -1,0 +1,196 @@
+<div
+  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+>
+  <h1 class="h2">Participants</h1>
+</div>
+<div class="card">
+  <div class="card-header" style="background-color: #fff">
+    <h4 class="card-title" style="margin-top: 20px">{{ title }}</h4>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="userForm" (ngSubmit)="createParticipant()">
+      <div *ngIf="idParticipant" class="form-group" style="margin-bottom: 20px">
+        <label for="description">Type:</label>
+        <input type="text" id="code" disabled [value]="formVisibility" />
+      </div>
+      <div
+        *ngIf="!idParticipant"
+        class="form-group"
+        style="margin-bottom: 20px"
+      >
+        <select
+          (change)="updateForm($event)"
+          class="form-control"
+          style="border-top: none; border-left: none; border-right: none"
+        >
+          <option value="" disabled [defaultSelected]="true">
+            Sélectionner un type de participant
+          </option>
+          <option value="employe">Employé</option>
+          <option value="particulier">Particulier</option>
+          <option value="company">Entreprise</option>
+        </select>
+      </div>
+      <div class="group" *ngIf="formVisibility === 'company'">
+        <div class="form-group" style="margin-bottom: 20px">
+          <label for="name">Nom de l'entreprise:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="name"
+            style="border-top: none; border-left: none; border-right: none"
+          />
+        </div>
+        <div class="form-group" style="margin-bottom: 20px">
+          <label for="activity">Description de l'entreprise:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="activity"
+            style="border-top: none; border-left: none; border-right: none"
+          />
+        </div>
+      </div>
+      <div
+        class="group"
+        *ngIf="formVisibility === 'particulier' || formVisibility === 'employe'"
+      >
+        <div class="form-group" style="margin-bottom: 20px">
+          <label for="firstname">Nom:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="firstname"
+            style="border-top: none; border-left: none; border-right: none"
+          />
+          <input
+            type="hidden"
+            class="form-control"
+            formControlName="id"
+            style="border-top: none; border-left: none; border-right: none"
+          />
+        </div>
+        <div class="form-group" style="margin-bottom: 20px">
+          <label for="lastname">Prénom:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="lastname"
+            style="border-top: none; border-left: none; border-right: none"
+          />
+        </div>
+        <div class="form-group" style="margin-bottom: 20px">
+          <label for="highestDiploma">Dernier diplôme obtenu:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="highestDiploma"
+            style="border-top: none; border-left: none; border-right: none"
+          />
+        </div>
+        <div class="group1" *ngIf="formVisibility === 'particulier'">
+          <div class="form-group" style="margin-bottom: 20px">
+            <label for="activity">Métier:</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="activity"
+              style="border-top: none; border-left: none; border-right: none"
+            />
+          </div>
+          <div class="form-group" style="margin-bottom: 20px">
+            <label for="birthDate">Date de naissance:</label>
+            <input
+              type="date"
+              class="form-control"
+              formControlName="birthDate"
+              style="border-top: none; border-left: none; border-right: none"
+            />
+          </div>
+        </div>
+        <div class="group2" *ngIf="formVisibility === 'employe'">
+          <div class="form-group" style="margin-bottom: 20px">
+            <label for="company">Sélectionner votre entreprise:</label>
+            <select
+              formControlName="company"
+              class="form-control"
+              style="border-top: none; border-left: none; border-right: none"
+            >
+              <option value="" disabled>Sélectionner votre entreprise</option>
+              <option
+                *ngFor="let company of companies"
+                [ngValue]="company"
+                [selected]="
+                  company.id === entreprise.id ? entreprise.name : null
+                "
+              >
+                {{ company.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom: 20px">
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          style="border-top: none; border-left: none; border-right: none"
+        />
+        <div
+          class="text-danger"
+          *ngIf="
+            userForm.get('email')!.hasError('email') &&
+            userForm.get('email')!.touched
+          "
+        >
+          Veuillez entrer une adresse email valide.
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom: 20px">
+        <label for="phone">Numéro de téléphone:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="phone"
+          style="border-top: none; border-left: none; border-right: none"
+        />
+      </div>
+      <div class="form-group" style="margin-bottom: 20px">
+        <label for="address">Votre adresse:</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="address"
+          style="border-top: none; border-left: none; border-right: none"
+        />
+      </div>
+      <div
+        class="group"
+        *ngIf="formVisibility === 'particulier' || formVisibility === 'employe'"
+      >
+        <div>
+          Sexe:
+          <label>
+            <input type="radio" formControlName="gender" value="M" required /> M
+          </label>
+          <label>
+            <input type="radio" formControlName="gender" value="F" required /> F
+          </label>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        style="float: right; margin-right: 20px;"
+      >
+        <span *ngIf="isLoading" class="spinner-border"></span>
+        <span [ngClass]="isLoading ? 'hidden' : ''"
+          ><span [ngClass]="isFormEdit ? 'hidden' : ''">Ajouter</span
+          ><span [ngClass]="!isFormEdit ? 'hidden' : ''">Modifier</span></span
+        >
+      </button>
+      <button class="btn btn-secondary" style="float: right; margin-right: 20px;" (click)="cancel()">Annuler</button>
+    </form>
+  </div>

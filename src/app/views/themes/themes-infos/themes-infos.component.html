@@ -1,0 +1,268 @@
+<h1 class="h2  mt-3">Infos du thème</h1>
+<hr class="lead mt-0" />
+<div class="row page-titles mx-0">
+  <div class="col-md-12 mb-2">
+    <div>
+      <h4><span class="lead">Titre:</span> {{ themeDetail.themeTitle }}</h4>
+      <h5>
+        <span class="lead">Description:</span> {{ themeDetail.description }}
+      </h5>
+    </div>
+  </div>
+</div>
+<div class="row tab-content">
+  <div
+    id="list-view"
+    class="tab-pane fade active show col-lg-12"
+    role="tabpanel"
+  >
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">Liste des sous-thèmes</h4>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#sousThemeModal"
+          style="float: right; margin-top: -30px"
+        >
+          Joindre un sous-thème
+        </button>
+        <div
+          class="modal fade"
+          id="sousThemeModal"
+          data-bs-backdrop="static"
+          tabindex="-1"
+          aria-labelledby="sousThemeModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Ajouter un sous-thème</h5>
+              </div>
+              <form [formGroup]="subThemeForm">
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <input
+                      type="text"
+                      class="form-control input-default"
+                      placeholder="Intitulé *"
+                      formControlName="subthemeTitle"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <input
+                      type="text"
+                      class="form-control input-default"
+                      value="{{ getSubString(themeDetail.themeTitle) }}"
+                      disabled
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <textarea
+                      class="form-control input-rounded"
+                      name=""
+                      id="s-theme-description"
+                      cols="60"
+                      rows="5"
+                      placeholder="Description *"
+                      formControlName="description"
+                      required
+                    ></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="submit"
+                    [disabled]="subThemeForm.invalid || isFormSubThemeLoading"
+                    class="btn btn-primary"
+                    (click)="saveSubTheme()"
+                  >
+                    <span
+                      *ngIf="isFormSubThemeLoading"
+                      class="spinner-border"
+                    ></span
+                    ><span [ngClass]="isFormSubThemeLoading ? 'hidden' : ''"
+                      >&nbsp;Enregistrer</span
+                    >
+                  </button>
+                  <button
+                    type="reset"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    &nbsp;Annuler
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body" *ngIf="!isLoading">
+        <div class="row mb-3">
+          <div class="col-md-3 d-flex">
+            <form style="width: 100%" [formGroup]="filterForm">
+              <div class="d-flex align-items-baseline">
+                <label for="entries" class="form-label me-2">Nombre</label>
+                <select
+                  formControlName="filter"
+                  class="form-select-sm"
+                  id="entries"
+                >
+                  <option value="5">5</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-5">&nbsp;</div>
+          <div class="col-md-4">
+            <div [ngClass]="searchVisibility?'search active mb-3':'search mb-3'" >
+              <form [formGroup]="searchForm">
+              <input [ngClass]="searchVisibility?'input':'hidden'" (input)="searchByName()" type="search" placeholder="Intitulé..." formControlName="keyWord">
+              </form>
+              <button (click)="changeSearchVisibility()" class="search-btn">
+                <i class="fa fa-search text-light"></i>
+              </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="head-title">Intitulé</th>
+                <th scope="col" class="head-title">Description</th>
+                <th scope="col" class="head-title">Date création</th>
+                <th scope="col" class="head-title">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let subThemeFrist of themeDetail.subThemes | paginate: {
+                  itemsPerPage: filterForm.value.filter,
+                  currentPage: page,
+                  };"
+              >
+                <th scope="row">{{ subThemeFrist.subthemeTitle }}</th>
+                <td>{{ getSubString(subThemeFrist.description) }}</td>
+                <td>{{ subThemeFrist.creationDate | date : "dd-MM-yyyy" }}</td>
+                <td>
+                  <a
+                    href="javascript:void(0);"
+                    (click)="subThemeEdit(subThemeFrist.id)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#sousThemeUpdateModal"
+                    title="Modifier"
+                    ><i class="fa fa-pencil colored"></i></a
+                  >&nbsp;
+                  <a
+                    href="javascript:void(0);"
+                    title="Supprimer"
+                    (click)="subThemeDelete(subThemeFrist.id)"
+                    ><i class="fa fa-trash text-danger"></i
+                  ></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <p class="m-0">
+              Affichage de {{ filterForm.value.filter }} entrées sur
+              {{ sousThemesAll.length }}
+            </p>
+          </div>
+
+          <div class="col-md-2"></div>
+          <div class="col-md-4 text-end">
+            <pagination-controls
+              (pageChange)="handlePageChange($event)"
+              (pageBoundsCorrection)="handlePageChange($event)"
+              previousLabel="précédant"
+              nextLabel="Suivant"
+              screenReaderPaginationLabel="Pagination"
+              screenReaderPageLabel="page"
+              screenReaderCurrentLabel="Vous êtes à la page"
+            ></pagination-controls>
+          </div>
+          <div
+            class="modal fade"
+            id="sousThemeUpdateModal"
+            data-bs-backdrop="static"
+            tabindex="-1"
+            aria-labelledby="sousThemeUpdateModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Modifier Sous-Thème</h5>
+                </div>
+                <form [formGroup]="subThemeUpdateForm">
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <input
+                        type="text"
+                        class="form-control input-default"
+                        placeholder="Intitulé *"
+                        formControlName="subthemeTitle"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <textarea
+                        class="form-control input-rounded"
+                        name=""
+                        id=""
+                        cols="60"
+                        rows="5"
+                        placeholder="Description *"
+                        formControlName="description"
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="submit"
+                      [disabled]="
+                        subThemeUpdateForm.invalid || isFormSubThemeLoading
+                      "
+                      class="btn btn-primary"
+                      (click)="updateSubTheme()"
+                    >
+                      <span
+                        *ngIf="isFormSubThemeLoading"
+                        class="spinner-border"
+                      ></span
+                      ><span [ngClass]="isFormSubThemeLoading ? 'hidden' : ''"
+                        >&nbsp;Enregistrer</span
+                      >
+                    </button>
+                    <button
+                      type="reset"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      &nbsp;Annuler
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid waiting" *ngIf="isLoading">
+        <span class="spinner-border"></span>
+      </div>
+    </div>
+  </div>
+</div>

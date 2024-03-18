@@ -1,0 +1,237 @@
+<h1 class="h2 mt-3">Sessions</h1>
+<hr class="lead mt-0" />
+<div class="row tab-content">
+  <div
+    id="list-view"
+    class="tab-pane fade active show col-lg-12"
+    role="tabpanel"
+  >
+    <div class="card">
+
+      <div class="card-header">
+        <!-- Bouton pour ouvrir le modal d'ajout de sessions -->
+
+          <div class="d-flex justify-content-between">
+            <h4 class="card-title">Liste des sessions</h4>
+            <a href="dashboard/InsertSessionComponent" class="btn btn-primary">Nouvelle session</a>
+          </div>
+  
+          <!-- TABABR -->
+          <p class="my-3">
+            <a
+              (click)="handleShowInterSession()"
+              class="link-offset-2 mx-5 link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+            >
+              <span [ngClass]="{ active: showInterSession }">Session planifiées</span>
+            </a>
+            
+            <a
+              (click)="handleShowIntraSession()"
+              class="link-offset-2 mx-5 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+            >
+              <span [ngClass]="{ active: showIntraSession }">Demandes participant</span>
+            </a>
+          </p>
+
+      </div>
+
+      <!-- Tableau d'affichage des sessions -->
+      <div class="card-body">
+
+        <!-- Barre de recherche et filtre -->
+        <div class="row mb-3 justify-content-between">
+          <div class="col-md-3">
+            <form style="width: 100%" [formGroup]="filterForm">
+              <div class="d-flex align-items-baseline">
+                <label for="entries" class="form-label me-2">Nombre</label>
+                <select
+                  formControlName="filter"
+                  class="form-select-sm"
+                  id="entries"
+                >
+                  <option value="5">5</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-4">
+            <div
+              [ngClass]="
+                searchVisibility ? 'search active mb-3' : 'search mb-3'
+              "
+            >
+              <form [formGroup]="searchForm">
+                <input
+                  [ngClass]="searchVisibility ? 'input' : 'hidden'"
+                  (input)="searchBy()"
+                  type="search"
+                  placeholder="Code/Description/etc..."
+                  formControlName="keyWord"
+                  style="width: 100%"
+                />
+              </form>
+              <button (click)="changeSearchVisibility()" class="search-btn">
+                <i class="fa fa-search text-light"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tableau de liste des participants -->
+        <div class="table-responsive">
+
+          <!-- Session planifiées -->
+          <table *ngIf="showInterSession" class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="head-title">Code</th>
+                <th scope="col" class="head-title">Description</th>
+                <th scope="col" class="head-title">Min Participants</th>
+                <th scope="col" class="head-title">Statut</th>
+                <th scope="col" class="head-title">Durée (J)</th>
+                <th scope="col" class="head-title">Date</th>
+                <th scope="col" class="head-title">Lieu</th>
+                <th scope="col" class="head-title">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Lignes de données pour les particuliers -->
+              <tr
+                *ngFor="let interSession of interSessionAll | paginate: {
+                itemsPerPage: filterForm.value.filter,
+                currentPage: page,
+                };"
+              >
+                <td>{{ interSession.code }}</td>
+                <td>{{ interSession.description }}</td>
+                <td>{{ interSession.minParticipants }}</td>
+                <td>{{ interSession.status }}</td>
+                <td>{{ interSession.duration }}</td>
+                <td>{{ interSession.date | date : "dd-MM-yyyy"}}</td>
+                <td>{{ interSession.location }}</td>
+
+                <td>
+                  <!-- Actions pour les particuliers -->
+                  <span
+                    class="text-danger"
+                    (click)="handleInterSessionDetail(interSession.id)"
+                    title="Supprimer"
+                    ><i class="fa fa-info text-info"></i></span
+                  >&nbsp;
+
+                  <span
+                    class="text-success"
+                    (click)="goToEditInterSession(interSession.id)"
+                    title="Modifier"
+                    ><i class="fa fa-pencil colored"></i></span
+                  >&nbsp;
+
+                  <span
+                    class="text-danger"
+                    (click)="deleteInterSession(interSession.id)"
+                    title="Supprimer"
+                    ><i class="fa fa-trash"></i></span
+                  >&nbsp;
+                  
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Demande de participant -->
+          <table *ngIf="showIntraSession" class="table">
+            <thead>
+              <tr>
+                <th scope="col" class="head-title">Code</th>
+                <th scope="col" class="head-title">Description</th>
+                <th scope="col" class="head-title">Statut</th>
+                <th scope="col" class="head-title">Durée (J)</th>
+                <th scope="col" class="head-title">Date</th>
+                <th scope="col" class="head-title">Lieu</th>
+                <th scope="col" class="head-title">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Lignes de données pour les employés -->
+              <tr
+                *ngFor="let intraSession of intraSessionAll | paginate: {
+                itemsPerPage: filterForm.value.filter,
+                currentPage: page,
+                };"
+              >
+              <td>{{ intraSession.code }}</td>
+              <td>{{ intraSession.description }}</td>
+
+              <td>{{ intraSession.status }}</td>
+              <td>{{ intraSession.duration }}</td>
+              <td>{{ intraSession.date | date : "dd-MM-yyyy"}}</td>
+              <td>{{ intraSession.location }}</td>
+                <td>
+                  <!-- Actions pour les employés -->
+                  <span
+                    class="text-danger"
+                    (click)="handleIntraSessionDetail(intraSession.id)"
+                    title="Supprimer"
+                    ><i class="fa fa-info text-info"></i></span
+                  >&nbsp;
+
+                  <span
+                    class="text-success"
+                    (click)="goToEditIntraSession(intraSession.id)"
+                    title="Modifier"
+                    ><i class="fa fa-pencil colored"></i></span
+                  >&nbsp;
+
+                  <span
+                    class="text-danger"
+                    (click)="deleteIntraSession(intraSession.id)"
+                    title="Supprimer"
+                    ><i class="fa fa-trash"></i></span
+                  >&nbsp;
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        
+        <!-- Informations de pagination -->
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <p class="m-0">
+              Affichage de {{ filterForm.value.filter }} entrées sur
+              {{
+                showInterSession
+                  ? interSessionAll.length
+                  : intraSessionAll.length
+              }}
+            </p>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-4 text-end">
+            <!-- Contrôles de pagination -->
+            <pagination-controls
+              (pageChange)="handlePageChange($event)"
+              (pageBoundsCorrection)="handlePageChange($event)"
+              previousLabel="Précédent"
+              nextLabel="Suivant"
+              screenReaderPaginationLabel="Pagination"
+              screenReaderPageLabel="page"
+              screenReaderCurrentLabel="Vous êtes à la page"
+            ></pagination-controls>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Chargement en cours -->
+      <div class="container-fluid waiting" *ngIf="isLoading">
+        <span class="spinner-border"></span>
+      </div>
+      
+    </div>
+  </div>
+</div>
